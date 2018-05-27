@@ -8,7 +8,11 @@ public class Talia implements Scene {
 	public String play(Bara bara) {
 		
 		bara.text("Hello boii!");
-		
+		bara.text("bajs");
+		if(bara.didUserWrite("bajs")) {
+			bara.text("wahh SUGOI!!!");
+		}
+		bara.text("ok bruhh");
 		return "Start";
 	}
 }
