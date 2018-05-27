@@ -21,6 +21,10 @@ public class Bara {
 		waitForConfirmation();
 		
 	}
+	
+	public String readInput() {
+		return scanner.nextLine();
+	}
 
 	private void wait(int millis) {
 		try {
