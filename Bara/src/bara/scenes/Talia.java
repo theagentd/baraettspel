@@ -2,13 +2,13 @@ package bara.scenes;
 
 import bara.Bara;
 
-public class Start implements Scene {
+public class Talia implements Scene {
 
 	@Override
 	public String play(Bara bara) {
 		
-		bara.text("Hello!");
+		bara.text("Hello boii!");
 		
-		return "Talia";
+		return "Start";
 	}
 }
