@@ -16,6 +16,7 @@ public class Main {
 			
 			try {
 				Scene scene = findScene(sceneName);
+				System.out.println(">>> Starting scene '" + sceneName + "' <<<");
 				sceneName = scene.play(bara);
 			}catch(Exception ex) {
 				System.err.println("Failed to find scene '" + sceneName + "'");
