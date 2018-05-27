@@ -22,8 +22,8 @@ public class Bara {
 		
 	}
 	
-	public String readInput() {
-		return scanner.nextLine();
+	public boolean didUserWrite(String text) {
+		return scanner.nextLine().equals(text);
 	}
 
 	private void wait(int millis) {
