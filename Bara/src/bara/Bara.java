@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import static org.lwjgl.glfw.GLFW.*;
+
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 public class Bara {
@@ -17,18 +19,42 @@ public class Bara {
 	
 	private SceneManager sceneManager;
 	
+	private float mouseX, mouseY;
+	
 	public Bara() {
 		windowManager = new WindowManager();
 		
 		sceneManager = new SceneManager();
 		
 		windowManager.setMouseCallback(new GLFWMouseButtonCallback() {
-			
 			@Override
 			public void invoke(long window, int button, int action, int mods) {
 				if(action == GLFW_PRESS) {
-					sceneManager.mouseClicked();
+					sceneManager.mouseClicked(mouseX, mouseY);
 				}
+			}
+		});
+		
+		windowManager.setMouseMotionCallback(new GLFWCursorPosCallback() {
+			@Override
+			public void invoke(long window, double mx, double my) {
+				
+				float w = windowManager.getWidth();
+				float h = windowManager.getHeight();
+				
+				
+				mouseX = (float)((mx / w - 0.5) * INTERNAL_WIDTH);
+				mouseY = (float)((my / h - 0.5) * INTERNAL_HEIGHT);
+				
+				
+				float aspectError = (w / h) / ASPECT_RATIO;
+				
+				if(aspectError > 1.0) {
+					mouseX *= aspectError;
+				} else {
+					mouseY /= aspectError;
+				}
+				
 			}
 		});
 
@@ -59,7 +85,7 @@ public class Bara {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			
-			boolean done = sceneManager.update(delta);
+			boolean done = sceneManager.update(delta, mouseX, mouseY);
 			
 			glDisable(GL_BLEND);
 			

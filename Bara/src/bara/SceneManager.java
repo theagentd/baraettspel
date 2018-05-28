@@ -43,6 +43,8 @@ public class SceneManager {
 	
 	private ArrayList<PersonImpl> persons;
 	
+	private String[] choices;
+	
 	
 	
 	private HashMap<String, Class<? extends Scene>> sceneMap;
@@ -69,6 +71,8 @@ public class SceneManager {
 		
 		
 		persons = new ArrayList<>();
+		
+		choices = null;
 		
 		ScriptFunctions.setSceneManager(this);
 		
@@ -108,14 +112,37 @@ public class SceneManager {
 		scriptThread.start();
 	}
 	
-	public void mouseClicked() {
+	public void mouseClicked(float x, float y) {
+
+		if(y < -INTERNAL_HEIGHT*0.5f || y > INTERNAL_HEIGHT*0.5f) {
+			return;
+		}
+			
+		
+		Object result = new Object();
+		
+		
+		if(choices != null) {
+			int selectedChoice = 0;
+			for(int i = 0; i < choices.length; i++) {
+				float limit = (float)INTERNAL_HEIGHT * (i+0) / choices.length - INTERNAL_HEIGHT * 0.5f;
+				if(y < limit) {
+					break;
+				}
+				selectedChoice = i;
+			}
+			result = selectedChoice;
+			System.out.println(result);
+			choices = null;
+		}
+		
 		if(actions != null) {
 			for(int i = 0; i < actions.size(); i++) {
 				actions.get(i).skip(this);
 			}
 			actions = null;
 			try {
-				resultQueue.put(new Object());
+				resultQueue.put(result);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -163,6 +190,10 @@ public class SceneManager {
 		
 		
 	}
+
+	public void showChoices(String[] choices) {
+		this.choices = choices;
+	}
 	
 	public void setBackground(String name) {
 		if(background != null) {
@@ -203,7 +234,7 @@ public class SceneManager {
 	
 	
 
-	public boolean update(float delta) {
+	public boolean update(float delta, float mouseX, float mouseY) {
 
 		if(actions == null) {
 			actions = actionQueue.poll();
@@ -252,11 +283,15 @@ public class SceneManager {
 		glVertex2f(-INTERNAL_WIDTH*0.5f, +INTERNAL_HEIGHT*0.5f);
 		glEnd();
 		
+		
 		renderPersons();
 		
-		renderTextBox();
-		
-		
+
+		if(choices == null) {
+			renderTextBox();
+		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glColor4f(0, 0, 0, 1 - faderAlpha*faderAlpha);
 		glBegin(GL_QUADS);
 		glVertex2f(-INTERNAL_WIDTH*0.5f, -INTERNAL_HEIGHT*0.5f);
@@ -265,14 +300,79 @@ public class SceneManager {
 		glVertex2f(-INTERNAL_WIDTH*0.5f, +INTERNAL_HEIGHT*0.5f);
 		glEnd();
 		
+		
+		if(choices != null) {
+			renderChoices(mouseX, mouseY);
+		}
+		
+
+		glColor4f(1, 0, 0, 1);
+		glBegin(GL_QUADS);
+		glVertex2f(mouseX-20, mouseY-20);
+		glVertex2f(mouseX+20, mouseY-20);
+		glVertex2f(mouseX+20, mouseY+20);
+		glVertex2f(mouseX-20, mouseY+20);
+		glEnd();
+		
 		return finished;
 	}
-	
+
 	private void renderPersons() {
 		for(int i = 0; i < persons.size(); i++) {
 			PersonImpl p = persons.get(i);
 			p.render();
 		}
+	}
+	
+	private void renderChoices(float mx, float my) {
+
+		int numChoices = choices.length;
+
+		float x1 = -INTERNAL_WIDTH*0.5f;
+		float x2 = +INTERNAL_WIDTH*0.5f;
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBegin(GL_QUADS);
+		
+		for(int i = 0; i < numChoices; i++) {
+
+			float y1 = (float)INTERNAL_HEIGHT * (i+0) / numChoices - INTERNAL_HEIGHT * 0.5f;
+			float y2 = (float)INTERNAL_HEIGHT * (i+1) / numChoices - INTERNAL_HEIGHT * 0.5f;
+			
+			if(my >= y1 && my < y2) {
+				glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			} else {
+				glColor4f(0, 0, 0, 0.5f);
+			}
+			
+
+			glVertex2f(x1, y1);
+			glVertex2f(x2, y1);
+			glVertex2f(x2, y2);
+			glVertex2f(x1, y2);
+			
+			
+		}
+		glEnd();
+		
+
+		fontShader.bind();
+		glColor3f(1f, 1f, 1f);
+
+		for(int i = 0; i < numChoices; i++) {
+			
+			String c = choices[i];
+
+			float y = (float)INTERNAL_HEIGHT * (i+0.5f) / numChoices - INTERNAL_HEIGHT * 0.5f;
+		
+			float[] dimensions = font.getStringDimensions(c, 500, 75, 0, 0);
+			
+			font.drawString(c, c.length(), VerticalAlignment.TOP, -dimensions[0]*0.5f, y - dimensions[1]*0.5f, 500, 75, 0, 0);
+		
+		}
+		ShaderProgram.useFixed();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
 	}
 
 	private void renderTextBox() {

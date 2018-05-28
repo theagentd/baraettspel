@@ -58,6 +58,11 @@ public class ScriptFunctions {
 			submit();
 		}
 	}
+	
+	public static int showChoices(String... choices) {
+		actions.add(new ShowChoices(choices));
+		return (Integer)submit();
+	}
 
 	private static Object submit() {
 		Object result = sceneManager.submitActions(actions);

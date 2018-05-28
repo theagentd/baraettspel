@@ -2,6 +2,7 @@ package bara;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
@@ -16,6 +17,7 @@ public class WindowManager {
 	private int[] width, height;
 
 	private GLFWMouseButtonCallback mouseCallback;
+	private GLFWCursorPosCallback mouseMotionCallback;
 	
 	public WindowManager() {
 		
@@ -66,6 +68,10 @@ public class WindowManager {
 	
 	public void setMouseCallback(GLFWMouseButtonCallback mouseCallback) {
 		glfwSetMouseButtonCallback(window, this.mouseCallback = mouseCallback);
+	}
+	
+	public void setMouseMotionCallback(GLFWCursorPosCallback mouseMotionCallback) {
+		glfwSetCursorPosCallback(window, this.mouseMotionCallback = mouseMotionCallback);
 	}
 	
 	public void update() {

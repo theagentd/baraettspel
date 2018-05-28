@@ -115,6 +115,76 @@ public class GLFont {
 		
 		//System.out.println("Font loaded.");
 	}
+	
+	public float[] getStringDimensions(String string, float maxLineWidth, float size, float extraSpacing, float extraLineSpacing) {
+		int len = string.length();
+		
+		
+
+		float scale = size / originalSize;
+		float lineHeight = this.lineHeight * scale + extraLineSpacing;
+		
+		
+
+		float advanceX = 0, advanceY = 0;
+		float maxAdvanceX = 0;
+		
+		boolean isCommand = false;
+		
+		for(int i = 0; i < len; i++){
+			char c = string.charAt(i);
+			char next = (i+1) < len ? string.charAt(i+1) : 0;
+			
+			if(!isCommand){
+				if(c == '\\' && next == '{'){
+					c = next; // escaped curly brace {
+					i++;
+				}else{
+					if(c == '{'){
+						isCommand = true;
+						continue;
+					}
+				}
+				
+				if(c == '\n'){
+					maxAdvanceX = Math.max(maxAdvanceX, advanceX);
+					advanceX = 0;
+					advanceY += lineHeight;
+					continue;
+				}
+				
+				GLFont.Glyph g = getGlyph(c);
+				if(g != null){
+					float a = g.advance * scale + extraSpacing;
+					if(advanceX + a > maxLineWidth){
+						maxAdvanceX = Math.max(maxAdvanceX, advanceX);
+						advanceX = 0;
+						advanceY += lineHeight;
+					}
+					advanceX += a;
+				}
+				
+				if(isBreakable(c)){
+					float wordLength = getWordLength(string, len, i+1, scale, extraSpacing);
+					if(advanceX + wordLength > maxLineWidth){
+						maxAdvanceX = Math.max(maxAdvanceX, advanceX);
+						advanceX = 0;
+						advanceY += lineHeight;
+					}
+				}
+			}else{
+				if(c == '}'){
+					isCommand = false;
+				}
+			}
+		}
+		
+		if(isCommand){
+			System.err.println("error in string \"" + string + "\": end of string in command");
+		}
+		
+		return new float[]{Math.max(maxAdvanceX, advanceX), advanceY + lineHeight}; //Make sure to capture the last line.
+	}
 
 	public void drawString(String string, int numChars, VerticalAlignment verticalAlignment, float x, float y, float maxLineWidth, float size, float extraSpacing, float extraLineSpacing) {
 		

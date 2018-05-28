@@ -27,6 +27,20 @@ public class Start implements Scene {
 
 		text("That means I'm 12 and write edgy shit on my blog with crazy-ass smileys everywhere <3 >__< >///< .__. i can't even");
 		
+
+		text("Do you like fujoshis?");
+		int likesFujoshis = showChoices("Jag älskar fujoshis kyaaahhh", "FUCK YOUUUU", "ehhhhh");
+		if(likesFujoshis == 0) {
+			text("GAAAAYYYYY");
+		}
+		if(likesFujoshis == 1) {
+			text("FUCK YOU TOOOOOO");
+		}
+		if(likesFujoshis == 2) {
+			text("Blärgh, du är en ehhhhh");
+		}
+		
+		
 		kawaiichan.moveTo(-400, 400, 0.75f);
 		kawaiichan.setSprite("surprised", true);
 		text("Holy balls, I can move.");
