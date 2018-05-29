@@ -23,7 +23,7 @@ public class Start implements Scene {
 		
 		text("My name is Kawaii-chan and I'm a fujoshi.");
 		
-		text("F U J O S H I", 4f); //slow-mo text
+		text("F U J O S H I", 0.2f); //slow-mo text
 
 		text("That means I'm 12 and write edgy shit on my blog with crazy-ass smileys everywhere <3 >__< >///< .__. i can't even");
 		
