@@ -59,8 +59,8 @@ public class ScriptFunctions {
 		}
 	}
 	
-	public static int showChoices(String... choices) {
-		actions.add(new ShowChoices(choices));
+	public static int showChoice(String... choices) {
+		actions.add(new ShowChoice(choices));
 		return (Integer)submit();
 	}
 

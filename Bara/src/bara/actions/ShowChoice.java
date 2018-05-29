@@ -2,11 +2,11 @@ package bara.actions;
 
 import bara.SceneManager;
 
-public class ShowChoices implements Action{
+public class ShowChoice implements Action{
 	
 	private String[] choices;
 	
-	public ShowChoices(String[] choices) {
+	public ShowChoice(String[] choices) {
 		this.choices = choices;
 	}
 

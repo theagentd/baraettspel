@@ -29,7 +29,7 @@ public class Start implements Scene {
 		
 
 		text("Do you like fujoshis?");
-		int likesFujoshis = showChoices("Jag älskar fujoshis kyaaahhh", "FUCK YOUUUU", "ehhhhh");
+		int likesFujoshis = showChoice("Jag älskar fujoshis kyaaahhh", "FUCK YOUUUU", "ehhhhh");
 		if(likesFujoshis == 0) {
 			text("GAAAAYYYYY");
 		}
